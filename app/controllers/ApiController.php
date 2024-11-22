@@ -8,11 +8,19 @@ class ApiController
 {
     private $jwtHandler;
 
+    /**
+     * Constructor to initialize JWTHandler
+     */
     public function __construct()
     {
         $this->jwtHandler = new JwtHandler();
     }
 
+    /**
+     * Authenticate the request using JWT token
+     * 
+     * @return array Decoded payload
+     */
     public function authenticateRequest()
     {
         // Get Authorization header
@@ -35,6 +43,12 @@ class ApiController
         return $payload; // Return decoded payload for further use
     }
 
+    /**
+     * Send JSON response
+     * 
+     * @param int $statusCode HTTP status code
+     * @param array $data Response data
+     */
     public function sendResponse($statusCode, $data)
     {
         http_response_code($statusCode);
@@ -42,7 +56,9 @@ class ApiController
         echo json_encode($data);
     }
 
-    // Return list of users in JSON format
+    /**
+     * Return list of users in JSON format
+     */
     public function users()
     {
         // Make sure user is authenticated. Add this line to protected api routes or when user should be authenticated
@@ -51,38 +67,39 @@ class ApiController
         // Fetch all users using the User model
         $users = User::findAll();
 
-        $userData = [];
-        foreach ($users as $user) {
-            $userData[] = [
+        $userData = array_map(function($user) {
+            return [
                 'user_id' => $user->user_id,
                 'username' => $user->username,
                 'email' => $user->email,
                 'image_url' => $user->image_url, // Assuming the user has a picture attribute
             ];
-        }
+        }, $users);
 
         // Set the content type to JSON and return the response
-        header('Content-Type: application/json');
-        echo json_encode($userData);
+        $this->sendResponse(200, $userData);
     }
 
-    // Api login
+    /**
+     * Handle user login and return JWT token
+     * 
+     * @param array $params Login parameters
+     */
     public function login($params)
     {
         $user = new User();
         $user->email = $params['email'] ?? null;
         $user->password = $params['password'] ?? null;
         $authenticatedUser = $user->login();
-        if ($user->login()) {
-            $token = $this->jwtHandler->generateToken(['user_id' => $authenticatedUser->user_id, 'email' => $authenticatedUser->email ]);
-            echo json_encode([
+        if ($authenticatedUser) {
+            $token = $this->jwtHandler->generateToken(['user_id' => $authenticatedUser->user_id, 'email' => $authenticatedUser->email]);
+            $this->sendResponse(200, [
                 'message' => 'Login successful',
                 'token' => $token,
-                'user' => ['user_id' => $authenticatedUser->user_id, 'email'=> $authenticatedUser->email ]
+                'user' => ['user_id' => $authenticatedUser->user_id, 'email' => $authenticatedUser->email]
             ]);
         } else {
-            http_response_code(401);
-            echo json_encode(['message' => 'Invalid email or password']);
+            $this->sendResponse(401, ['message' => 'Invalid email or password']);
         }
         exit;
     }

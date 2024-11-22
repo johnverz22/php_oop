@@ -3,20 +3,25 @@ namespace App\Controllers;
 
 use App\Models\User;
 
-
 class UserController extends Controller
 {
     public function __construct()
     {
-        $this->layout = "main"; //set default layout for all actions
+        $this->layout = "main"; // Set default layout for all actions
         $this->generateCsrfToken();
     }
 
+    /**
+     * Handle user login
+     *
+     * @param array $params
+     */
     public function login($params)
     {
         // Redirect to home if already logged in
-        if (User::isLoggedIn())
+        if (User::isLoggedIn()) {
             self::redirect("/");
+        }
 
         $this->layout = 'simple';
         $this->pageTitle = 'Login';
@@ -52,21 +57,25 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * Handle user registration
+     *
+     * @param array $params
+     */
     public function register($params)
     {
         // Redirect to home if already logged in
-        if (User::isLoggedIn())
+        if (User::isLoggedIn()) {
             self::redirect("/");
+        }
 
         $this->layout = 'simple';
         $this->pageTitle = 'Register';
 
-        // Create the User model instance
         $model = new User();
 
         // If the form is submitted
         if (!empty($params)) {
-            // Validate CSRF token
             $this->validateCsrfToken($params);
 
             // Assign the form data to the model
@@ -75,7 +84,7 @@ class UserController extends Controller
             $model->password = $params['password'];
             $model->repassword = $params['repassword']; // Confirm password
 
-            //set validation rules
+            // Set validation rules
             $model->setRules([
                 'username' => ['required' => true, 'minLength' => 6, 'unique' => true],
                 'email' => ['required' => true, 'email' => true, 'unique' => true],
@@ -85,14 +94,12 @@ class UserController extends Controller
 
             // Validate the model data
             if ($model->validate()) {
-
                 // Proceed with registration (e.g., save the user to the database)
                 if ($model->register()) {
                     self::redirect('/login'); // Redirect to login after successful registration
                 } else {
                     $this->errors[] = "An error occurred while registering. Please try again.";
                 }
-
             } else {
                 // If validation fails, collect validation errors
                 foreach ($model->getErrors() as $field => $errors) {
@@ -102,12 +109,17 @@ class UserController extends Controller
                 }
             }
         }
+
         $this->view('user/register', [
             'model' => $model
         ]);
     }
 
-    // Display table
+    /**
+     * Display users table
+     *
+     * @param array $params
+     */
     public function users($params)
     {
         $this->pageTitle = 'Users';
@@ -115,18 +127,17 @@ class UserController extends Controller
 
         // Handle delete
         if (isset($params['delete_user_id'])) {
-            // Validate CSRF token
             $this->validateCsrfToken($params);
             $user = User::find($params['delete_user_id']);
             $user->delete();
             self::redirect('/users');
         }
 
-        // Handle search 
+        // Handle search
         if (isset($params['q'])) {
-            $q = "%".$params['q']."%";
+            $q = "%" . $params['q'] . "%";
             $users = User::filter([
-                "username LIKE"=> $q,
+                "username LIKE" => $q,
                 "OR email LIKE" => $q,
             ]);
         }
@@ -141,6 +152,11 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * Change user profile picture
+     *
+     * @param array $params
+     */
     public function changePicture($params)
     {
         $this->pageTitle = "Change Profile Picture";
@@ -185,6 +201,9 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * Handle user logout
+     */
     public function logout()
     {
         User::logout();
