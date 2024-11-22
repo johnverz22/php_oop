@@ -8,9 +8,11 @@ class HomeController extends Controller{
     public function index(){
         
         $this->pageTitle = "Home";
+
+        $data = "some data";
        
         $this->view("home/index", [
-            "data" => ''
+            "data" => $data,
         ]);
     }
 

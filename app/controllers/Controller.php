@@ -12,9 +12,6 @@ class Controller{
     protected $homeUrl;
     protected $errors = [];
 
-    protected $assetList;
-
-
     public function __construct(){
         $this->layout = "layout/main"; //set default page layout
         $this->pageTitle = "Home";

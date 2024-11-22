@@ -5,7 +5,6 @@ $menuItems = [
     ['label' => 'Users', 'icon' => 'group', 'route' => route('/users'), 'active' => false],
     ['label' => 'Sample API Request', 'icon' => 'api', 'route' => route('/sample-api-request'), 'active' => false],
 ];
-
 ?>
 
 

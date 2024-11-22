@@ -72,13 +72,13 @@ class ApiController
         $user = new User();
         $user->email = $params['email'] ?? null;
         $user->password = $params['password'] ?? null;
-
+        $authenticatedUser = $user->login();
         if ($user->login()) {
-            $token = $this->jwtHandler->generateToken(['user_id' => $user->user_id, 'email' => $user->email ]);
+            $token = $this->jwtHandler->generateToken(['user_id' => $authenticatedUser->user_id, 'email' => $authenticatedUser->email ]);
             echo json_encode([
                 'message' => 'Login successful',
                 'token' => $token,
-                'user' => ['user_id' => $user->user_id, 'email'=> $user->email ]
+                'user' => ['user_id' => $authenticatedUser->user_id, 'email'=> $authenticatedUser->email ]
             ]);
         } else {
             http_response_code(401);

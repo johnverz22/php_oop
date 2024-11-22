@@ -72,8 +72,8 @@ if (array_key_exists($uri, $routes)) {
 
         }
 
-
         // Call the Controller function with collected parameters
+        // Same as $controller->$action($params);
         call_user_func([$controller, $action], $params);
 
     } else {
