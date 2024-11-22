@@ -207,6 +207,7 @@ class Model
         foreach ($conditions as $column => $value) {
             $whereClauses[] = "{$column} ?";
             $params[$paramCounter] = $value;
+            $paramCounter++;
         }
 
         // If there are any conditions, append the WHERE clause
@@ -221,9 +222,6 @@ class Model
         foreach($params as $key=>$value) {
             $stmt->bindValue($key, $value);
         }
-
-        var_dump($params);
-        var_dump($whereClauses);
 
         // Execute the query
         $stmt->execute();

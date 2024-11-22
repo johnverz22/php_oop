@@ -17,7 +17,7 @@ $menuItems = [
         <div class="flex justify-end items-center mb-4 space-x-2">
             <div class="relative w-64">
                 <!-- Search input field -->
-                <input type="text" id="searchInput" name="q" class="border border-gray-300 p-2 pl-2 pr-12 rounded-md w-full"
+                <input type="text" id="searchInput" name="q" value="<?= $_GET['q'] ?? "" ?>" class="border border-gray-300 p-2 pl-2 pr-12 rounded-md w-full"
                     placeholder="Search...">
             </div>
             <!-- Submit button next to search field -->

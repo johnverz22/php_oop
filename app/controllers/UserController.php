@@ -127,12 +127,12 @@ class UserController extends Controller
             $q = "%".$params['q']."%";
             $users = User::filter([
                 "username LIKE"=> $q,
-                "OR emaile LIKE" => $q,
+                "OR email LIKE" => $q,
             ]);
         }
 
-        // If $users is still blank, fetch all
-        if (empty($users)) {
+        // If no search request
+        if (!isset($params['q'])) {
             $users = User::findAll();
         }
 
