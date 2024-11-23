@@ -1,3 +1,25 @@
+/**
+ * Define the routes for the application.
+ *
+ * This file returns an associative array where the keys are the URL paths
+ * and the values are arrays containing the controller class and the method
+ * to be called when the route is accessed.
+ *
+ * Routes:
+ * - '/'                => HomeController::index
+ * - '/login'           => UserController::login
+ * - '/users'           => UserController::users
+ * - '/register'        => UserController::register
+ * - '/logout'          => UserController::logout
+ * - '/changePicture'   => UserController::changePicture
+ * - '/sample-api-request' => HomeController::sampleApiRequest
+ *
+ * API Routes:
+ * - '/api/users'       => ApiController::users
+ * - '/api/login'       => ApiController::login
+ *
+ * @return array The array of routes and their corresponding controllers and methods.
+ */
 <?php
 
 use App\Controllers\ApiController;
