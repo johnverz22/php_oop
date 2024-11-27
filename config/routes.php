@@ -21,7 +21,7 @@
  *
  * @return array The array of routes and their corresponding controllers and methods.
  */
-<?php
+
 
 use App\Controllers\ApiController;
 use App\Controllers\HomeController;
