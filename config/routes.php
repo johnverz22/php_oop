@@ -1,3 +1,4 @@
+<?php
 /**
  * Define the routes for the application.
  *
