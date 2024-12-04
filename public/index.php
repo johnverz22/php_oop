@@ -14,7 +14,8 @@ session_start();
 
 // Import necessary files
 require_once __DIR__ . "/../config/config.php";
-require_once __DIR__ . "/../includes/autoload.php";
+// require_once __DIR__ . "/../includes/autoload.php";
+require_once __DIR__."/../vendor/autoload.php";
 require_once __DIR__ . "/../includes/global_functions.php";
 
 use App\Models\User;
@@ -31,6 +32,7 @@ $routes = require_once(__DIR__ . "/../config/routes.php");
 $guestRoutes = [
     '/login',
     '/register',
+    '/test-email'
     // Add more routes available to guests
 ];
 

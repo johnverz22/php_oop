@@ -26,6 +26,7 @@
 use App\Controllers\ApiController;
 use App\Controllers\HomeController;
 use App\Controllers\UserController;
+use App\Controllers\EmailController;
 
 
 // List all routes or address that can be visited in your application
@@ -37,6 +38,8 @@ return [
     '/logout' => [UserController::class,'logout'],
     '/changePicture' =>[UserController::class, 'changePicture'],
     '/sample-api-request' =>[HomeController::class, 'sampleApiRequest'],
+    '/test-email' =>[EmailController::class, 'index'],
+
 
     //Api routes
     '/api/users' => [ApiController::class,'users'],
