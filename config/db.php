@@ -1,8 +1,8 @@
 <?php
 return [
-    'host' => '172.17.0.3',
+    'host' => 'localhost',
     'port' => 3306,
     'dbname' => 'app_db',
-    'username' => 'app_user',
-    'password' => 'secret'
+    'username' => 'root',
+    'password' => ''
 ];
