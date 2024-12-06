@@ -13,6 +13,8 @@ class ApiController
      */
     public function __construct()
     {
+        
+
         $this->jwtHandler = new JwtHandler();
     }
 
@@ -102,5 +104,67 @@ class ApiController
             $this->sendResponse(401, ['message' => 'Invalid email or password']);
         }
         exit;
+    }
+
+    public function profileUpdate($params){
+        
+        
+        // Authenticate the user
+        $this->authenticateRequest();
+
+        $username = trim($params['username']);
+        $profilePicture = $params['profilePicture'];
+
+
+        // Validate and handle the uploaded file
+        if ($profilePicture['error'] !== UPLOAD_ERR_OK) {
+            $this->sendResponse(400, ['message' => 'Error uploading file']);
+            exit;
+        }
+        
+
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+        if (!in_array($profilePicture['type'], $allowedTypes)) {
+            $this->sendResponse(400, ['message' => 'Invalid file type. Only JPEG and PNG are allowed']);
+            exit;
+        }
+
+        
+        // Save the uploaded file
+        $uploadDir = __DIR__ . '/../../storage/images/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+        //$fileName = uniqid() . '_' . basename($profilePicture['name']);
+        $newFileName = uniqid('profile_') . '.' . pathinfo($params['profilePicture']['name'], PATHINFO_EXTENSION);
+        $filePath = $uploadDir . $newFileName;
+
+        if (!move_uploaded_file($profilePicture['tmp_name'], $filePath)) {
+            $this->sendResponse(500, ['message' => 'Failed to save the uploaded file']);
+            exit;
+        }
+
+        // Update user data in the database
+        $user = User::find($params['user_id']); // Fetch user from the database
+        if (!$user) {
+            $this->sendResponse(404, ['message' => 'User not found']);
+            exit;
+        }
+
+        $user->username = $username;
+        $user->image_url = $newFileName; // Assuming image_url stores the relative path
+        $updateResult = $user->save();
+
+        if ($updateResult) {
+            $this->sendResponse(200, [
+                'message' => 'Profile updated successfully',
+                'user' => [
+                    'username' => $user->username,
+                    'image_url' => $user->image_url,
+                ],
+            ]);
+        } else {
+            $this->sendResponse(500, ['message' => 'Failed to update profile']);
+        }
     }
 }
