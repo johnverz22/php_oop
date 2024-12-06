@@ -37,8 +37,10 @@ return [
     '/logout' => [UserController::class,'logout'],
     '/changePicture' =>[UserController::class, 'changePicture'],
     '/sample-api-request' =>[HomeController::class, 'sampleApiRequest'],
+    
 
     //Api routes
     '/api/users' => [ApiController::class,'users'],
     '/api/login' => [ApiController::class,'login'],
+    '/api/profile-update' => [ApiController::class, 'profileUpdate'],
 ];
