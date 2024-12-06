@@ -27,13 +27,16 @@ class ApiController
     {
         // Get Authorization header
         $headers = getallheaders();
-        if (!isset($headers['Authorization'])) {
+
+        $authorization = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+
+        if (!isset($authorization)) {
             $this->sendResponse(401, ['message' => 'Authorization header missing']);
             exit;
         }
-
+        
         // Extract token
-        $token = str_replace('Bearer ', '', $headers['Authorization']);
+        $token = str_replace('Bearer ', '', $authorization);
 
         // Validate token
         $payload = $this->jwtHandler->validateToken($token);
@@ -108,7 +111,6 @@ class ApiController
 
     public function profileUpdate($params){
         
-        
         // Authenticate the user
         $this->authenticateRequest();
 
@@ -116,13 +118,7 @@ class ApiController
         $profilePicture = $params['profilePicture'];
 
 
-        // Validate and handle the uploaded file
-        if ($profilePicture['error'] !== UPLOAD_ERR_OK) {
-            $this->sendResponse(400, ['message' => 'Error uploading file']);
-            exit;
-        }
-        
-
+        // Check if valid file types
         $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
         if (!in_array($profilePicture['type'], $allowedTypes)) {
             $this->sendResponse(400, ['message' => 'Invalid file type. Only JPEG and PNG are allowed']);
@@ -135,7 +131,7 @@ class ApiController
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
-        //$fileName = uniqid() . '_' . basename($profilePicture['name']);
+
         $newFileName = uniqid('profile_') . '.' . pathinfo($params['profilePicture']['name'], PATHINFO_EXTENSION);
         $filePath = $uploadDir . $newFileName;
 
